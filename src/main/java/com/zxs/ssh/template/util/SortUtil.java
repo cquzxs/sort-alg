@@ -3,8 +3,6 @@ package com.zxs.ssh.template.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-
 /**
  * Project Name:sort-alg
  * File Name:SortUtil
@@ -21,12 +19,16 @@ public class SortUtil {
 
     /**
      * 冒泡排序(升序)
+     * 最坏情况：本身就是降序，此时比较次数相同n²，交换次数是最多的n²
+     * 最好情况：本身就是升序，此时比较次数相同n²，交换次数是最少的0
+     * 数组长度为10万时，花费时间大于10秒
+     * 性质：1、时间复杂度：O(n2)  2、空间复杂度：O(1)  3、稳定排序  4、原地排序
      *
      * @param a      待排序数组
      * @param length 数组长度
+     * @return 1表示排序成功，0表示排序失败
      */
-    public static void bubbleSort(int[] a, int length) {
-        long startTime = System.currentTimeMillis();
+    public static int bubbleSort(int[] a, int length) {
         for (int i = 0; i < length; i++) {
             for (int j = length - 1; j > i; j--) {
                 if (a[j] < a[j - 1]) {
@@ -36,18 +38,19 @@ public class SortUtil {
                 }
             }
         }
-        long endTime = System.currentTimeMillis();
-        System.out.println("冒泡排序花费时间：" + (endTime - startTime) + "ms\t\t\t数组大小：" + length);
+        return length;
     }
 
     /**
      * 选择排序(升序)
+     * 比较次数相同n²，交换次数相同n
+     * 数组长度为20万时，花费时间大于10秒
+     * 性质：1、时间复杂度：O(n2)  2、空间复杂度：O(1)  3、非稳定排序  4、原地排序
      *
      * @param a      待排序数组
      * @param length 数组长度
      */
-    public static void selectSort(int[] a, int length) {
-        long startTime = System.currentTimeMillis();
+    public static int selectSort(int[] a, int length) {
         int selectedIndex = 0;
         for (int i = 0; i < length; i++) {
             selectedIndex = i;
@@ -60,19 +63,20 @@ public class SortUtil {
             a[i] = a[selectedIndex];
             a[selectedIndex] = temp;
         }
-        long endTime = System.currentTimeMillis();
-        System.out.println("选择排序花费时间：" + (endTime - startTime) + "ms\t\t\t数组大小：" + length);
+        return length;
     }
 
     /**
      * 插入排序(升序)
-     * 数组长度为100万时，抛异常java.lang.StackOverflowError
+     * 最坏情况：本身就是降序，此时比较次数(n²)和交换次数(n²/2)都是最多的
+     * 最好情况：本身就是升序，此时比较次数(n²)和交换次数(0)都是最少的
+     * 数组长度为30万时，花费时间大于10秒
+     * 性质：1、时间复杂度：O(n2)  2、空间复杂度：O(1)  3、稳定排序  4、原地排序
      *
      * @param a      待排序数组
      * @param length 数组长度
      */
-    public static void insertSort(int[] a, int length) {
-        long startTime = System.currentTimeMillis();
+    public static int insertSort(int[] a, int length) {
         for (int i = 0; i < length - 1; i++) {
             for (int j = i + 1; j > 0; j--) {
                 if (a[j] < a[j - 1]) {
@@ -84,27 +88,26 @@ public class SortUtil {
                 }
             }
         }
-        long endTime = System.currentTimeMillis();
-        System.out.println("插入排序花费时间：" + (endTime - startTime) + "ms\t\t\t数组大小：" + length);
+        return length;
     }
 
     /**
      * 快速排序(升序)
+     * 数组长度为2百万时，抛异常java.lang.StackOverflowError
+     * 性质：1、时间复杂度：O(nlogn)  2、空间复杂度：O(logn)  3、非稳定排序  4、原地排序
      *
      * @param a      待排序数组
      * @param length 数组长度
      */
-    public static void quickSort(int[] a, int length) {
+    public static int quickSort(int[] a, int length) {
         try {
-            long startTime = System.currentTimeMillis();
             int leftIndex = 0;
             int rightIndex = length - 1;
             quickSortHelp(a, leftIndex, rightIndex);
-            long endTime = System.currentTimeMillis();
-            System.out.println("快速排序花费时间：" + (endTime - startTime) + "ms\t\t\t数组大小：" + length);
         } catch (Exception e) {
             logger.info("快速排序异常", e);
         }
+        return length;
     }
 
     /**
@@ -158,22 +161,21 @@ public class SortUtil {
 
     /**
      * 归并排序(升序)
-     * 数组长度为1亿时，抛异常java.lang.OutOfMemoryError: Java heap space
+     * 数组长度为5千万时，抛异常java.lang.OutOfMemoryError: Java heap space
+     * 性质：1、时间复杂度：O(nlogn)  2、空间复杂度：O(n)  3、稳定排序 4、非原地排序
      *
      * @param a      待排序数组
      * @param length 数组长度
      */
-    public static void mergeSort(int[] a, int length) {
+    public static int mergeSort(int[] a, int length) {
         try {
-            long startTime = System.currentTimeMillis();
             int leftIndex = 0;
             int rightIndex = length - 1;
             mergeSortHelp(a, leftIndex, rightIndex);
-            long endTime = System.currentTimeMillis();
-            System.out.println("归并排序花费时间：" + (endTime - startTime) + "ms\t\t\t数组大小：" + length);
         } catch (Exception e) {
             logger.info("归并排序异常", e);
         }
+        return length;
     }
 
     /**
@@ -231,15 +233,16 @@ public class SortUtil {
     /**
      * 希尔排序(升序)
      * 本质是插入排序
-     * 数组长度为1亿时，抛异常java.lang.OutOfMemoryError: Java heap space
+     * 数组长度为5千万时，抛异常java.lang.OutOfMemoryError: Java heap space
+     * 性质：1、时间复杂度：O(n的1.3次方)  2、空间复杂度：O(1)  3、非稳定排序  4、原地排序
      *
      * @param a      待排序数组
      * @param length 数组长度
      */
-    public static void shellSort(int[] a, int length) {
+    public static int shellSort(int[] a, int length) {
         try {
-            long startTime = System.currentTimeMillis();
-            //分组
+            //分组,确定步长和组数，初始步长为length / 2，组数为stepLength
+            //假如数组长度为8，步长 = 4，组数 = 4
             for (int stepLength = length / 2; stepLength > 0; stepLength /= 2) {
                 //插入排序
                 for (int i = 0; i < length - stepLength; i++) {
@@ -252,31 +255,31 @@ public class SortUtil {
                     }
                 }
             }
-            long endTime = System.currentTimeMillis();
-            System.out.println("希尔排序花费时间：" + (endTime - startTime) + "ms\t\t\t数组大小：" + length);
         } catch (Exception e) {
             logger.info("希尔排序异常", e);
         }
+        return length;
     }
 
     /**
      * 堆排序(升序)
+     * 算法步骤：1.构造最大堆  2.将根结点与最后一个节点交换（即去除根节点）  3.将剩余节点调整为最大堆  4.重复2和3
+     * 数组长度为5千万时，抛异常java.lang.OutOfMemoryError: Java heap space
+     * 性质：1、时间复杂度：O(nlogn)  2、空间复杂度：O(1)  3、非稳定排序  4、原地排序
      *
      * @param a      待排序数组
      * @param length 数组长度
      */
-    public static void heapSort(int[] a, int length) {
-        long startTime = System.currentTimeMillis();
+    public static int heapSort(int[] a, int length) {
         //构造最大堆
         buildMaxHeap(a, length);
         //将根结点与最后一个节点交换
         swap(a, 0, length - 1);
         for (int count = length - 1; count > 1; count--) {
-            buildMaxHeapHelp(a, count, 0);
+            buildMaxHeapHelp(a, count, 0);  //此时只有根节点不满足最大堆特性
             swap(a, 0, count - 1);
         }
-        long endTime = System.currentTimeMillis();
-        System.out.println("堆排序花费时间：" + (endTime - startTime) + "ms\t\t\t数组大小：" + length);
+        return length;
     }
 
 
@@ -288,6 +291,7 @@ public class SortUtil {
      */
     private static void buildMaxHeap(int[] a, int count) {
         //完全二叉树特性：最后一个节点的索引为count-1,其父节点索引为(count-1-1)/2
+        //最后一层都为叶子节点，所以从倒数第二层的最后一个节点开始构造最大堆
         for (int parentIndex = (count - 1 - 1) / 2; parentIndex >= 0; parentIndex--) {
             buildMaxHeapHelp(a, count, parentIndex);
         }
@@ -295,6 +299,7 @@ public class SortUtil {
 
     /**
      * 构建最大堆递归
+     * 最大堆：父节点比左右两个子节点都大
      *
      * @param a           堆（完全二叉树）
      * @param count       节点个数
@@ -314,25 +319,26 @@ public class SortUtil {
         }
         if (parentIndex != maxValueIndex) {
             swap(a, parentIndex, maxValueIndex);
-            buildMaxHeapHelp(a, count, maxValueIndex);
+            buildMaxHeapHelp(a, count, maxValueIndex);  //子节点也可能为其他节点的父节点
         }
     }
 
     /**
      * 基数排序(升序)
+     * 数组长度为3千万时，抛异常java.lang.OutOfMemoryError: Java heap space
+     * 性质：1、时间复杂度：O(kn)  2、空间复杂度：O(n+k)  3、稳定排序  4、非原地排序
      *
      * @param a      待排序数组
      * @param length 数组长度
      */
-    public static void radixSort(int[] a, int length) {
-        long startTime = System.currentTimeMillis();
+    public static int radixSort(int[] a, int length) {
         int currentLength = 1;//当前位数
         int maxNumberLength = getMaxNumberLength(a, length);//最大位数
         int[][] bucket = new int[10][length];//排序桶用于保存每次排序后的结果，这一位上排序结果相同的数字放在同一个桶里
         int[] order = new int[10];//用于保存每个桶里有多少个数字
         while (currentLength <= maxNumberLength) {
             for (int i = 0; i < length; i++) {
-                int digit = (a[i] / ((int) (Math.pow(10, currentLength-1)))) % 10;
+                int digit = (a[i] / ((int) (Math.pow(10, currentLength - 1)))) % 10;
                 bucket[digit][order[digit]] = a[i];
                 order[digit]++;
             }
@@ -346,8 +352,7 @@ public class SortUtil {
             }
             currentLength++;
         }
-        long endTime = System.currentTimeMillis();
-        System.out.println("基数排序花费时间：" + (endTime - startTime) + "ms\t\t\t数组大小：" + length);
+        return length;
     }
 
     /**
@@ -389,7 +394,29 @@ public class SortUtil {
      * @param args 系统参数
      */
     public static void main(String[] args) {
-        int length = 10000000;
+        OriginData originData = buildOriginData();
+
+        printExecuteTime(System.nanoTime(),bubbleSort(originData.a[0], originData.length),"冒泡排序");
+        System.out.println("isSorted:"+isSorted(originData.a[0],true));
+        printExecuteTime(System.nanoTime(),selectSort(originData.a[1], originData.length),"选择排序");
+        System.out.println("isSorted:"+isSorted(originData.a[1],true));
+        printExecuteTime(System.nanoTime(), insertSort(originData.a[2], originData.length), "插入排序");
+        System.out.println("isSorted:" + isSorted(originData.a[2], true));
+        printExecuteTime(System.nanoTime(),quickSort(originData.a[3], originData.length),"快速排序");
+        System.out.println("isSorted:"+isSorted(originData.a[3],true));
+        printExecuteTime(System.nanoTime(),mergeSort(originData.a[4], originData.length),"归并排序");
+        System.out.println("isSorted:"+isSorted(originData.a[4],true));
+        printExecuteTime(System.nanoTime(),shellSort(originData.a[5], originData.length),"希尔排序");
+        System.out.println("isSorted:"+isSorted(originData.a[5],true));
+        printExecuteTime(System.nanoTime(),heapSort(originData.a[6], originData.length),"堆排序");
+        System.out.println("isSorted:"+isSorted(originData.a[6],true));
+        printExecuteTime(System.nanoTime(),radixSort(originData.a[7], originData.length),"基数排序");
+        System.out.println("isSorted:"+isSorted(originData.a[7],true));
+    }
+
+    private static OriginData buildOriginData() {
+        OriginData originData = new OriginData();
+        int length = 10000;
         int[][] a = new int[8][length];//8种排序算法的初始数据
         for (int i = 0; i < length; i++) {
             a[0][i] = (new Double(Math.random() * 100)).intValue();
@@ -397,16 +424,16 @@ public class SortUtil {
                 a[j][i] = a[0][i];
             }
         }
-        //printArr(a[7]);
-        //bubbleSort(a[0], length);
-        //selectSort(a[1], length);
-        //insertSort(a[2], length);
-        //quickSort(a[3], length);
-        mergeSort(a[4], length);
-        shellSort(a[5], length);
-        heapSort(a[6], length);
-        radixSort(a[7], length);
-        //printArr(a[7]);
+        originData.a = a;
+        originData.length = length;
+        originData.value = 0;
+        return originData;
+    }
+
+    private static class OriginData {
+        int[][] a;  //初始数组
+        int length; //数组长度
+        int value;  //随机查找值
     }
 
     /**
@@ -416,6 +443,19 @@ public class SortUtil {
      */
     private static void caculateComplexity(String expression) {
 
+    }
+
+    /**
+     * 打印方法执行时间
+     *
+     * @param startTime 开始时间
+     * @param result    执行方法
+     * @param title     标题
+     */
+    private static void printExecuteTime(long startTime, int result, String title) {
+        long endTime = System.nanoTime();
+        double executeTime = (endTime - startTime) / 1000000d;
+        System.out.println("【" + title + "】执行时间：" + executeTime + "ms  result=" + result);
     }
 
     /**
@@ -429,6 +469,28 @@ public class SortUtil {
             res = res + a[i] + "\t";
         }
         System.out.println(res);
+    }
+
+    /**
+     * 验证是否有序
+     *
+     * @param a 数组
+     */
+    private static boolean isSorted(int[] a, boolean asc) {
+        if (asc) {
+            for (int i = 0; i < a.length - 1; i++) {
+                if (a[i + 1] < a[i]) {
+                    return false;
+                }
+            }
+        } else {
+            for (int i = 0; i < a.length - 1; i++) {
+                if (a[i + 1] > a[i]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }
