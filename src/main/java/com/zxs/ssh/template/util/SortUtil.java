@@ -452,7 +452,7 @@ public class SortUtil {
      * @param result    执行方法
      * @param title     标题
      */
-    private static void printExecuteTime(long startTime, int result, String title) {
+    private static void printExecuteTime(long startTime, Object result, String title) {
         long endTime = System.nanoTime();
         double executeTime = (endTime - startTime) / 1000000d;
         System.out.println("【" + title + "】执行时间：" + executeTime + "ms  result=" + result);
